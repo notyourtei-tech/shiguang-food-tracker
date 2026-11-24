@@ -1531,6 +1531,17 @@
           <div id="foodList" aria-live="polite"></div>
         </section>
         <aside>
+          <section class="panel" id="companionPanel">
+            <div class="section-head" style="margin-bottom:12px">
+              <div>
+                <h2 id="companionHeading"></h2>
+                <p id="companionSub" class="catalog-meta"></p>
+              </div>
+              <button id="addCompanion" class="button secondary xs" type="button"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span class="btn-label"></span></button>
+            </div>
+            <div id="companionList" class="companion-list"></div>
+            <p id="companionDisclaimer" class="companion-disclaimer"></p>
+          </section>
           <section class="panel" id="kitchenPanel">
             <div class="section-head" style="margin-bottom:10px">
               <div>
@@ -1553,17 +1564,6 @@
               </div>
             </div>
             <div id="recipeList" class="recipe-list"></div>
-          </section>
-          <section class="panel" id="companionPanel">
-            <div class="section-head" style="margin-bottom:12px">
-              <div>
-                <h2 id="companionHeading"></h2>
-                <p id="companionSub" class="catalog-meta"></p>
-              </div>
-              <button id="addCompanion" class="button secondary xs" type="button"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span class="btn-label"></span></button>
-            </div>
-            <div id="companionList" class="companion-list"></div>
-            <p id="companionDisclaimer" class="companion-disclaimer"></p>
           </section>
           <section id="shoppingAlert" class="notice warn hidden"></section>
           <p class="footer-note"></p>
@@ -2873,7 +2873,7 @@ Object.assign(I18N.en,{verifiedNote:'The sign-in page remembers your email secur
         const statusTxt=companionStatusLabel(item);
         const label=done?`${item.name} · ${statusTxt}`:(count>0?`${item.name} (${count}/${target}) · -${fmt(dose)}${uLbl}`:`${item.name} · -${fmt(dose)}${uLbl}`);
         return `<button class="meal-strip-pill${done?' is-taken':''}" type="button" data-take-companion="${esc(item.id)}" title="${esc(t('takeDose',{dose:fmt(dose),unit:uLbl}))}">${done?ICONS.check:(item.kind==='medicine'?ICONS.med:ICONS.pill)}<span>${esc(label)}</span></button>`;
-      }).join('')}</div>`).join('')}</div>`;
+      }).join('')}</div>`).join('')}</div><button class="meal-strip-pill" type="button" data-add-companion-strip="1">+ ${esc(t('addCompanion'))}</button>`;
       strip.classList.remove('hidden');
     }
     function renderCompanions(){
@@ -3903,6 +3903,7 @@ Object.assign(I18N.en,{verifiedNote:'The sign-in page remembers your email secur
       }finally{takingCompanionIds.delete(item.id)}
     }
     $('#mealTimingStrip').onclick=e=>{
+      if(e.target.closest('[data-add-companion-strip]')){openCompanionDialog(null);return}
       const btn=e.target.closest('[data-take-companion]');if(!btn)return;
       const item=mealCompanions.find(c=>c.id===btn.dataset.takeCompanion);
       if(item)void takeCompanionDose(item);
