@@ -1,7 +1,8 @@
 {
-  "name": "食光 FoodLight · クラウド食材帳 / 클라우드 식재료 장부",
-  "short_name": "食光 FoodLight",
-  "description": "Cloud kitchen pantry, cookware, recipe & mealtime supplement ledger.",
+  "name": "食光｜クラウド食材帳",
+  "short_name": "食光",
+  "description": "冷蔵庫の在庫・賞味期限、調理器具別レシピ、食前・食後のサプリ・常備薬まで一括管理。",
+  "lang": "ja",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f6f3ec",
