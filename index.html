@@ -3213,7 +3213,7 @@ Object.assign(I18N.en,{verifiedNote:'The sign-in page remembers your email secur
       const signedInActive=!!user&&!passwordSetup;
       $('#verified').classList.toggle('hidden',!passwordSetup);$('#auth').classList.toggle('hidden',!!user);$('#app').classList.toggle('hidden',!signedInActive);$('#mobileAccountWrap').classList.toggle('hidden',!signedInActive);$('#headerAction').innerHTML=user?'':'<span class="header-meta">'+esc(t('cloudLedger'))+'</span>';
       closeMobileAccountMenu();
-      if(!user){lastLoadedKey='';authMode=pendingSignupEmail()?'signup-pending':'signin';applyStaticLanguage();fillRememberedEmail();return}
+      if(!user){foods=[];kitchenEquipment=[];customKitchenEquipment=[];userRecipes=[];mealCompanions=[];expandedRecipeIds.clear();lastLoadedKey='';authMode=pendingSignupEmail()?'signup-pending':'signin';applyStaticLanguage();fillRememberedEmail();return}
       if(passwordSetup){lastLoadedKey='';rememberEmail(user.email||rememberedEmail());applyStaticLanguage();$('#newPassword').focus();return}
       forgetPendingSignup();forgetRememberedEmail();$('#accountEmail').textContent=user.email||'';$('#mobileAccountEmail').textContent=user.email||'';
       try{$('#today').textContent=new Intl.DateTimeFormat(localeMeta[locale].date,{month:'long',day:'numeric',weekday:'long'}).format(new Date())}catch{$('#today').textContent=localDateISO()}
@@ -4171,9 +4171,12 @@ Object.assign(I18N.en,{verifiedNote:'The sign-in page remembers your email secur
             const cuisine=ALLOWED_CUISINES.has(raw?.cuisine)?raw.cuisine:'custom';
             const copy=String(raw?.copy||'').trim().slice(0,240);
             const seasonings=Array.isArray(raw?.seasonings)?raw.seasonings.filter(v=>ALLOWED_SEASONINGS.has(v)):[];
-            const equipment=Array.isArray(raw?.equipment)?raw.equipment.filter(v=>ALLOWED_EQUIPMENT.has(v)):[];
+            const equipment=Array.isArray(raw?.equipment)?raw.equipment.map(v=>String(v||'').trim().slice(0,24)).filter(Boolean).slice(0,20):[];
             const steps=Array.isArray(raw?.steps)?raw.steps.map(s=>String(s||'').trim().slice(0,240)).filter(Boolean).slice(0,20):[];
-            const{error:err}=await sb.from('user_recipes').insert({user_id:user.id,title,cuisine,copy,ingredients:ings,seasonings,equipment,steps});
+            let{error:err}=await sb.from('user_recipes').insert({user_id:user.id,title,cuisine,copy,ingredients:ings,seasonings,equipment,steps});
+            if(err&&err.code==='23514'){
+              ({error:err}=await sb.from('user_recipes').insert({user_id:user.id,title,cuisine,copy,ingredients:ings,seasonings,equipment:equipment.filter(v=>ALLOWED_EQUIPMENT.has(v)),steps}));
+            }
             if(!err)addedCount++;
           }
         }
