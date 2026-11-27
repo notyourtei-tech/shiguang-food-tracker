@@ -4147,7 +4147,8 @@ Object.assign(I18N.en,{verifiedNote:'The sign-in page remembers your email secur
             if(dup)continue;
             const cond=ALLOWED_CONDITIONS.has(raw?.food_condition)?raw.food_condition:'unknown';
             const ready=Boolean(raw?.ready_to_eat);
-            const mins=Number.isInteger(Number(raw?.estimated_minutes))&&Number(raw.estimated_minutes)>=0&&Number(raw.estimated_minutes)<=1440?Number(raw.estimated_minutes):null;
+            const rawMins=raw?.estimated_minutes;
+            const mins=(rawMins!==null&&rawMins!==undefined&&rawMins!==''&&Number.isInteger(Number(rawMins))&&Number(rawMins)>=0&&Number(rawMins)<=1440)?Number(rawMins):null;
             const note=String(raw?.note||'').trim().slice(0,500);
             const payload={user_id:user.id,name,category,initial_amount:Number(init.toFixed(3)),remaining_amount:Number(rem.toFixed(3)),unit,purchased_on:purchasedOn,expires_on:expiresOn,storage,food_condition:cond,estimated_minutes:ready?0:mins,ready_to_eat:ready,note};
             let{data:ins,error:err}=await sb.from('food_items').insert(payload).select().single();
